@@ -3,21 +3,23 @@ var config = {
   apiKey: "AIzaSyD26jPQkjZse0oT7QeQH5MVFg6Ec8YzmVg",
   authDomain: "traintime-13e5b.firebaseapp.com",
   databaseURL: "https://traintime-13e5b.firebaseio.com",
+  projectId: "traintime-13e5b",
   storageBucket: "traintime-13e5b.appspot.com",
   messagingSenderId: "188323503261"
 };
+
 firebase.initializeApp(config);
 
 var database = firebase.database();
 var currentTime = moment();
 
-database.ref().on("child_added", function(childSnap) {
-  var name = childSnap.val().name;
-  var destination = childSnap.val().destination;
-  var firstTrain = childSnap.val().firstTrain;
-  var frequency = childSnap.val().frequency;
-  var min = childSnap.val().min;
-  var next = childSnap.val().next;
+database.ref().on("child_added", function(trainChild) {
+  var name = trainChild.val().name;
+  var destination = trainChild.val().destination;
+  var firstTrain = trainChild.val().firstTrain;
+  var frequency = trainChild.val().frequency;
+  var min = trainChild.val().min;
+  var next = trainChild.val().next;
 
   $("#trainTable > tbody").append(
     "<tr><td>" +
@@ -69,7 +71,7 @@ $("#addTrainBtn").on("click", function() {
     return false;
   }
 
-  // THE MATH!
+  //Moment
   //subtracts the first train time back a year to ensure it's before current time.
   var firstTrainConverted = moment(firstTrain, "hh:mm").subtract("1, years");
   // the time difference between current time and the first train
